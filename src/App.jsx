@@ -20,6 +20,49 @@ body {
   background: var(--bg-light);
 }
 
+/* Big Text Mode */
+.big-text-mode {
+  font-size: 20px !important;
+  line-height: 1.7 !important;
+}
+
+.big-text-mode .page-title {
+  font-size: 2rem !important;
+}
+
+.big-text-mode .card-title {
+  font-size: 1.3rem !important;
+}
+
+.big-text-mode .nav-item {
+  font-size: 1.1rem !important;
+  padding: 14px !important;
+}
+
+.big-text-mode .btn {
+  font-size: 1.1rem !important;
+  padding: 14px 28px !important;
+}
+
+.big-text-mode .form-input,
+.big-text-mode .form-select {
+  font-size: 1.1rem !important;
+  padding: 14px !important;
+}
+
+.big-text-mode .sidebar-title {
+  font-size: 1.3rem !important;
+}
+
+.big-text-mode .header-title {
+  font-size: 1.3rem !important;
+}
+
+.big-text-mode .sos-button {
+  font-size: 1.4rem !important;
+  padding: 24px !important;
+}
+
 .app-container {
   display: flex;
   min-height: 100vh;
@@ -2147,7 +2190,7 @@ export default function App() {
   };
 
   return (
-    <div className="app-container" style={{ fontSize: bigText ? "18px" : "14px" }}>
+    <div className={`app-container ${bigText ? 'big-text-mode' : ''}`}>
       <style>{styles}</style>
       
       {/* Mobile Overlay */}
