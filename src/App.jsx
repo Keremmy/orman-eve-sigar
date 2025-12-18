@@ -764,16 +764,134 @@ body {
   gap: 24px;
 }
 
+/* Mobile Menu Button */
+.mobile-menu-btn {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 24px;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Mobile Overlay */
+.mobile-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 199;
+}
+
+.mobile-overlay.active {
+  display: block;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
+  .mobile-menu-btn {
+    display: flex;
+  }
+  
   .sidebar {
     transform: translateX(-100%);
+    z-index: 200;
+    transition: transform 0.3s ease;
   }
+  
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  
   .main-content {
     margin-left: 0;
   }
+  
   .stats-grid {
     grid-template-columns: 1fr;
+  }
+  
+  .header-title {
+    font-size: 0.95rem;
+  }
+  
+  .header-mode {
+    display: none;
+  }
+  
+  .header-right {
+    gap: 8px;
+  }
+  
+  .lang-select {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+  }
+  
+  .mode-btn {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+  
+  .status-badge {
+    display: none;
+  }
+  
+  .page-title {
+    font-size: 1.25rem;
+  }
+  
+  .page-content {
+    padding: 16px;
+  }
+  
+  .top-header {
+    padding: 12px 16px;
+  }
+  
+  .sos-button {
+    padding: 16px 20px;
+    font-size: 1rem;
+  }
+  
+  .card {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-logo {
+    display: none;
+  }
+  
+  .header-title {
+    font-size: 0.9rem;
+  }
+  
+  .mode-btn span {
+    display: none;
+  }
+  
+  .icon-btn {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .page-title {
+    font-size: 1.1rem;
+  }
+  
+  .btn {
+    padding: 10px 16px;
+    font-size: 0.85rem;
   }
 }
 `;
@@ -962,6 +1080,9 @@ export default function App() {
   const [animalType, setAnimalType] = useState("wild");
   const [animalCount, setAnimalCount] = useState("1-5");
   const [animalAlertSending, setAnimalAlertSending] = useState(false);
+
+  // Mobile menu state
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // SOS Button state
   const [sosProgress, setSosProgress] = useState(0);
@@ -2029,8 +2150,14 @@ export default function App() {
     <div className="app-container" style={{ fontSize: bigText ? "18px" : "14px" }}>
       <style>{styles}</style>
       
+      {/* Mobile Overlay */}
+      <div 
+        className={`mobile-overlay ${mobileMenuOpen ? 'active' : ''}`} 
+        onClick={() => setMobileMenuOpen(false)}
+      ></div>
+
       {/* Sidebar */}
-      <aside className="sidebar">
+      <aside className={`sidebar ${mobileMenuOpen ? 'open' : ''}`}>
         <div className="sidebar-header">
           <div className="sidebar-logo">🔥</div>
           <div>
@@ -2046,7 +2173,7 @@ export default function App() {
               <div 
                 key={item.id}
                 className={`nav-item ${currentPage === item.id ? "active" : ""}`}
-                onClick={() => setCurrentPage(item.id)}
+                onClick={() => { setCurrentPage(item.id); setMobileMenuOpen(false); }}
               >
                 <span className="nav-item-icon">{item.icon}</span>
                 <span>{item.label}</span>
@@ -2061,7 +2188,7 @@ export default function App() {
               <div 
                 key={item.id}
                 className={`nav-item ${currentPage === item.id ? "active" : ""}`}
-                onClick={() => setCurrentPage(item.id)}
+                onClick={() => { setCurrentPage(item.id); setMobileMenuOpen(false); }}
               >
                 <span className="nav-item-icon">{item.icon}</span>
                 <span>{item.label}</span>
@@ -2083,6 +2210,12 @@ export default function App() {
         {/* Top Header */}
         <header className="top-header">
           <div className="header-left">
+            <button 
+              className="mobile-menu-btn" 
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              {mobileMenuOpen ? '✕' : '☰'}
+            </button>
             <div className="header-logo">🔥</div>
             <div>
               <div className="header-title">Hayat Yeşile Sığar</div>
