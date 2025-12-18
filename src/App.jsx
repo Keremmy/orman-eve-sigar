@@ -63,6 +63,111 @@ body {
   padding: 24px !important;
 }
 
+/* Colorblind Mode - Using official colorblind-safe palette */
+.colorblind-mode {
+  --primary: #0077BB !important; /* Blue instead of red */
+  --primary-dark: #005588 !important;
+  --success: #0077BB !important; /* Blue instead of green */
+  --warning: #EE7733 !important; /* Orange for warnings */
+}
+
+.colorblind-mode .sos-button,
+.colorblind-mode .btn-primary {
+  background: #CC3311 !important; /* High contrast red-orange */
+}
+
+.colorblind-mode .sos-button:hover,
+.colorblind-mode .btn-primary:hover {
+  background: #AA2200 !important;
+}
+
+.colorblind-mode .btn-success {
+  background: #0077BB !important; /* Blue for success */
+}
+
+.colorblind-mode .nav-item.active {
+  background: #E6F2FF !important;
+  color: #0077BB !important;
+  border-left: 4px solid #0077BB !important;
+}
+
+.colorblind-mode .nav-badge {
+  background: #EE7733 !important; /* Orange badge */
+}
+
+.colorblind-mode .status-online {
+  background: #E6F2FF !important;
+  color: #0077BB !important;
+}
+
+.colorblind-mode .online-dot {
+  background: #0077BB !important;
+}
+
+.colorblind-mode .fire-zone {
+  border-color: #CC3311 !important;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(204, 51, 17, 0.1),
+    rgba(204, 51, 17, 0.1) 10px,
+    rgba(204, 51, 17, 0.2) 10px,
+    rgba(204, 51, 17, 0.2) 20px
+  ) !important;
+}
+
+.colorblind-mode .safe-zone {
+  border-color: #0077BB !important;
+  background: repeating-linear-gradient(
+    -45deg,
+    rgba(0, 119, 187, 0.1),
+    rgba(0, 119, 187, 0.1) 10px,
+    rgba(0, 119, 187, 0.2) 10px,
+    rgba(0, 119, 187, 0.2) 20px
+  ) !important;
+}
+
+.colorblind-mode .emergency-card {
+  background: #FFF5EB !important;
+  border-color: #EE7733 !important;
+}
+
+.colorblind-mode .emergency-header {
+  background: #CC3311 !important;
+}
+
+.colorblind-mode .emergency-number {
+  color: #CC3311 !important;
+}
+
+.colorblind-mode .map-alert {
+  background: #FFF5EB !important;
+  border-color: #EE7733 !important;
+  color: #994400 !important;
+}
+
+.colorblind-mode .thermal-spot {
+  background: radial-gradient(circle, #EE7733 0%, #FFAA00 50%, transparent 70%) !important;
+}
+
+.colorblind-mode .toggle-switch.active {
+  background: #0077BB !important;
+}
+
+.colorblind-mode .sidebar-logo,
+.colorblind-mode .header-logo {
+  background: linear-gradient(135deg, #0077BB 0%, #33BBEE 100%) !important;
+}
+
+.colorblind-mode .mode-btn-citizen {
+  background: #E6F2FF !important;
+  color: #0077BB !important;
+  border-color: #99CCEE !important;
+}
+
+.colorblind-mode .mode-btn-afad {
+  background: #0077BB !important;
+}
+
 .app-container {
   display: flex;
   min-height: 100vh;
@@ -2190,7 +2295,7 @@ export default function App() {
   };
 
   return (
-    <div className={`app-container ${bigText ? 'big-text-mode' : ''}`}>
+    <div className={`app-container ${bigText ? 'big-text-mode' : ''} ${colorBlind ? 'colorblind-mode' : ''}`}>
       <style>{styles}</style>
       
       {/* Mobile Overlay */}
