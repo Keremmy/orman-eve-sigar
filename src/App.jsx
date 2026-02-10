@@ -1241,21 +1241,96 @@ export default function App() {
               </div>
             </div>
 
-            {/* NASA FIRMS Embedded Map */}
+            {/* Map Preview Card */}
             <div style={{ 
               borderRadius: 12, 
               overflow: "hidden", 
               border: "1px solid #e5e7eb",
-              marginBottom: 16
+              marginBottom: 16,
+              background: "linear-gradient(135deg, #1a365d 0%, #2c5282 50%, #2b6cb0 100%)",
+              position: "relative",
+              height: 400
             }}>
-              <iframe
-                src="https://firms.modaps.eosdis.nasa.gov/map/#d:24hrs;@35.0,39.0,6.0z"
-                width="100%"
-                height="500"
-                style={{ border: 0 }}
-                title="NASA FIRMS Fire Map"
-                allowFullScreen
-              ></iframe>
+              {/* Map visualization */}
+              <div style={{ position: "absolute", inset: 0, opacity: 0.3 }}>
+                <div style={{ position: "absolute", top: "20%", left: "30%", width: 8, height: 8, background: "#ff0000", borderRadius: "50%", boxShadow: "0 0 20px #ff0000" }}></div>
+                <div style={{ position: "absolute", top: "35%", left: "45%", width: 12, height: 12, background: "#ff4400", borderRadius: "50%", boxShadow: "0 0 25px #ff4400" }}></div>
+                <div style={{ position: "absolute", top: "50%", left: "55%", width: 6, height: 6, background: "#ff6600", borderRadius: "50%", boxShadow: "0 0 15px #ff6600" }}></div>
+                <div style={{ position: "absolute", top: "60%", left: "35%", width: 10, height: 10, background: "#ff0000", borderRadius: "50%", boxShadow: "0 0 20px #ff0000" }}></div>
+                <div style={{ position: "absolute", top: "25%", left: "60%", width: 8, height: 8, background: "#ff8800", borderRadius: "50%", boxShadow: "0 0 18px #ff8800" }}></div>
+              </div>
+              
+              {/* Center content */}
+              <div style={{ 
+                position: "absolute", 
+                inset: 0, 
+                display: "flex", 
+                flexDirection: "column",
+                alignItems: "center", 
+                justifyContent: "center",
+                color: "white",
+                textAlign: "center",
+                padding: 24
+              }}>
+                <div style={{ fontSize: 64, marginBottom: 16 }}>🌍🔥</div>
+                <h3 style={{ fontSize: "1.5rem", marginBottom: 8 }}>
+                  {lang === "tr" ? "NASA FIRMS Yangın Haritası" : "NASA FIRMS Fire Map"}
+                </h3>
+                <p style={{ marginBottom: 24, opacity: 0.9 }}>
+                  {lang === "tr" 
+                    ? "Türkiye ve dünya genelindeki aktif yangınları gerçek zamanlı görüntüleyin"
+                    : "View active fires in Turkey and worldwide in real-time"}
+                </p>
+                <a 
+                  href="https://firms.modaps.eosdis.nasa.gov/map/#d:24hrs;@39.0,35.0,6.0z" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style={{
+                    background: "#dc2626",
+                    color: "white",
+                    padding: "16px 32px",
+                    borderRadius: 12,
+                    textDecoration: "none",
+                    fontWeight: 700,
+                    fontSize: "1.1rem",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 8,
+                    boxShadow: "0 4px 15px rgba(220, 38, 38, 0.4)"
+                  }}
+                >
+                  🛰️ {lang === "tr" ? "NASA FIRMS'i Aç" : "Open NASA FIRMS"}
+                </a>
+              </div>
+            </div>
+
+            {/* Features Grid */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 16 }}>
+              <div className="card" style={{ textAlign: "center", padding: 16 }}>
+                <div style={{ fontSize: 32, marginBottom: 8 }}>🛰️</div>
+                <div style={{ fontWeight: 600, marginBottom: 4 }}>MODIS & VIIRS</div>
+                <div style={{ fontSize: "0.8rem", color: "#6b7280" }}>
+                  {lang === "tr" ? "NASA Uyduları" : "NASA Satellites"}
+                </div>
+              </div>
+              <div className="card" style={{ textAlign: "center", padding: 16 }}>
+                <div style={{ fontSize: 32, marginBottom: 8 }}>⏱️</div>
+                <div style={{ fontWeight: 600, marginBottom: 4 }}>
+                  {lang === "tr" ? "Gerçek Zamanlı" : "Real-Time"}
+                </div>
+                <div style={{ fontSize: "0.8rem", color: "#6b7280" }}>
+                  {lang === "tr" ? "24 saat içinde güncellenir" : "Updated within 24 hours"}
+                </div>
+              </div>
+              <div className="card" style={{ textAlign: "center", padding: 16 }}>
+                <div style={{ fontSize: 32, marginBottom: 8 }}>🌍</div>
+                <div style={{ fontWeight: 600, marginBottom: 4 }}>
+                  {lang === "tr" ? "Dünya Geneli" : "Worldwide"}
+                </div>
+                <div style={{ fontSize: "0.8rem", color: "#6b7280" }}>
+                  {lang === "tr" ? "Tüm dünyayı kapsar" : "Covers entire globe"}
+                </div>
+              </div>
             </div>
 
             {/* Legend */}
@@ -1280,28 +1355,15 @@ export default function App() {
                 </div>
               </div>
             </div>
-            
-            {/* Open in NASA FIRMS Button */}
-            <div style={{ marginTop: 16 }}>
-              <a 
-                href="https://firms.modaps.eosdis.nasa.gov/map/#d:24hrs;@35.0,39.0,6.0z" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="btn btn-primary btn-block"
-                style={{ textDecoration: "none", justifyContent: "center" }}
-              >
-                🌐 {lang === "tr" ? "NASA FIRMS'de Tam Ekran Aç" : "Open Full Screen in NASA FIRMS"}
-              </a>
-            </div>
 
             <div className="map-alert" style={{ marginTop: 16 }}>
-              <span>⚠️</span>
+              <span>ℹ️</span>
               <div>
-                <strong>{lang === "tr" ? "Canlı Uydu Verisi" : "Live Satellite Data"}</strong>
+                <strong>{lang === "tr" ? "Nasıl Kullanılır?" : "How to Use?"}</strong>
                 <p style={{ fontSize: "0.85rem", marginTop: 4 }}>
                   {lang === "tr" 
-                    ? "Bu harita NASA'nın MODIS ve VIIRS uydularından alınan gerçek zamanlı yangın verilerini göstermektedir."
-                    : "This map shows real-time fire data from NASA's MODIS and VIIRS satellites."}
+                    ? "Yukarıdaki butona tıklayarak NASA FIRMS haritasını yeni sekmede açın. Haritada kırmızı noktalar aktif yangınları gösterir."
+                    : "Click the button above to open NASA FIRMS map in a new tab. Red dots on the map indicate active fires."}
                 </p>
               </div>
             </div>
