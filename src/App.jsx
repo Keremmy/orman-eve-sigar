@@ -804,7 +804,7 @@ const T = {
   
   // Emergency
   emergencyReport: { tr: "Acil İhbar", ku: "Ragihandina Acîl", en: "Emergency Report" },
-  holdToSend: { tr: "2 saniye basılı tutarak acil ihbar gönderin (konum + fotoğraf + ses)", ku: "2 saniye bigire da ku hişyariya acîl bişînî (cîh + wêne + deng)", en: "Hold for 2 seconds to send emergency (location + photo + audio)" },
+  holdToSend: { tr: "2 saniye basılı tutun - konum otomatik alınır, ardından durumu açıklayın", ku: "2 saniye bigire - cîh bixweber tê girtin, paşê rewşê rave bike", en: "Hold for 2 seconds - location captured automatically, then describe the situation" },
   keepHolding: { tr: "Basılı tutmaya devam edin...", ku: "Berdewam bike...", en: "Keep holding..." },
   sosButton: { tr: "SOS İHBAR ET", ku: "SOS RAGIHANDINA", en: "SOS REPORT" },
   
@@ -914,6 +914,10 @@ export default function App() {
   // SOS Button state
   const [sosProgress, setSosProgress] = useState(0);
   const [sosHolding, setSosHolding] = useState(false);
+  const [showSosModal, setShowSosModal] = useState(false);
+  const [sosMessage, setSosMessage] = useState("");
+  const [sosLocation, setSosLocation] = useState(null);
+  const [sosSending, setSosSending] = useState(false);
   const sosTimerRef = useRef(null);
   const sosIntervalRef = useRef(null);
 
@@ -952,17 +956,44 @@ export default function App() {
       clearInterval(sosIntervalRef.current);
     }
     
-    // Get location and send SOS
+    // Get location and show modal
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const payload = { name, phone, coords: pos.coords, time: new Date().toISOString() };
-        console.log("SOS gönderiliyor:", payload);
-        alert(lang === "tr" ? "🆘 ACİL İHBAR GÖNDERİLDİ!\n\nKonum, fotoğraf ve ses kaydı iletildi." : "🆘 EMERGENCY SENT!\n\nLocation, photo and audio transmitted.");
+        setSosLocation({
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude
+        });
+        setShowSosModal(true);
       },
       (err) => {
-        alert(lang === "tr" ? "🆘 ACİL İHBAR GÖNDERİLDİ!\n\n(Konum alınamadı: " + err.message + ")" : "🆘 EMERGENCY SENT!\n\n(Location unavailable: " + err.message + ")");
+        setSosLocation(null);
+        setShowSosModal(true);
       }
     );
+  };
+
+  const sendSosReport = () => {
+    setSosSending(true);
+    
+    const payload = {
+      name,
+      phone,
+      location: sosLocation,
+      message: sosMessage,
+      time: new Date().toISOString()
+    };
+    
+    console.log("SOS gönderiliyor:", payload);
+    
+    // Simulate sending
+    setTimeout(() => {
+      setSosSending(false);
+      setShowSosModal(false);
+      setSosMessage("");
+      alert(lang === "tr" 
+        ? "🆘 ACİL İHBAR GÖNDERİLDİ!\n\nKonum ve mesajınız yetkililere iletildi." 
+        : "🆘 EMERGENCY SENT!\n\nYour location and message have been sent to authorities.");
+    }, 1500);
   };
 
   // Save preferences
@@ -1566,6 +1597,189 @@ export default function App() {
           {renderPage()}
         </div>
       </main>
+
+      {/* SOS Message Modal */}
+      {showSosModal && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "rgba(0,0,0,0.7)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1000
+        }}>
+          <div style={{
+            background: "white",
+            borderRadius: 16,
+            padding: 24,
+            width: "90%",
+            maxWidth: 450,
+            boxShadow: "0 20px 50px rgba(0,0,0,0.3)"
+          }}>
+            {/* Header */}
+            <div style={{ 
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "space-between", 
+              marginBottom: 20,
+              paddingBottom: 16,
+              borderBottom: "2px solid #fecaca"
+            }}>
+              <h2 style={{ 
+                fontSize: "1.25rem", 
+                fontWeight: 700, 
+                color: "#dc2626",
+                display: "flex", 
+                alignItems: "center", 
+                gap: 8 
+              }}>
+                🆘 {lang === "tr" ? "Acil Durum İhbarı" : "Emergency Report"}
+              </h2>
+              <button 
+                onClick={() => { setShowSosModal(false); setSosMessage(""); }}
+                style={{ 
+                  background: "none", 
+                  border: "none", 
+                  fontSize: 24, 
+                  cursor: "pointer",
+                  color: "#6b7280"
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Location Info */}
+            <div style={{
+              background: sosLocation ? "#dcfce7" : "#fef3c7",
+              padding: 12,
+              borderRadius: 8,
+              marginBottom: 16,
+              display: "flex",
+              alignItems: "center",
+              gap: 12
+            }}>
+              <span style={{ fontSize: 24 }}>{sosLocation ? "📍" : "⚠️"}</span>
+              <div>
+                <div style={{ fontWeight: 600, color: sosLocation ? "#166534" : "#92400e" }}>
+                  {sosLocation 
+                    ? (lang === "tr" ? "Konum Alındı" : "Location Captured")
+                    : (lang === "tr" ? "Konum Alınamadı" : "Location Unavailable")
+                  }
+                </div>
+                <div style={{ fontSize: "0.85rem", color: sosLocation ? "#15803d" : "#a16207" }}>
+                  {sosLocation 
+                    ? `${sosLocation.lat.toFixed(6)}, ${sosLocation.lng.toFixed(6)}`
+                    : (lang === "tr" ? "Manuel konum girebilirsiniz" : "You can enter location manually")
+                  }
+                </div>
+              </div>
+            </div>
+
+            {/* Message Input */}
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ 
+                display: "block", 
+                fontWeight: 600, 
+                marginBottom: 8,
+                color: "#374151"
+              }}>
+                {lang === "tr" ? "Ne görüyorsunuz? Durumu açıklayın:" : "What do you see? Describe the situation:"}
+              </label>
+              <textarea
+                value={sosMessage}
+                onChange={(e) => setSosMessage(e.target.value)}
+                placeholder={lang === "tr" 
+                  ? "Örn: Ormanda duman görüyorum, yaklaşık 500 metre uzaklıkta..." 
+                  : "E.g: I see smoke in the forest, about 500 meters away..."}
+                style={{
+                  width: "100%",
+                  minHeight: 120,
+                  padding: 12,
+                  borderRadius: 8,
+                  border: "2px solid #e5e7eb",
+                  fontSize: "1rem",
+                  resize: "vertical",
+                  fontFamily: "inherit"
+                }}
+              />
+            </div>
+
+            {/* Quick Message Buttons */}
+            <div style={{ marginBottom: 16 }}>
+              <div style={{ fontSize: "0.85rem", color: "#6b7280", marginBottom: 8 }}>
+                {lang === "tr" ? "Hızlı Mesajlar:" : "Quick Messages:"}
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                {[
+                  { tr: "🔥 Yangın görüyorum", en: "🔥 I see fire" },
+                  { tr: "💨 Duman var", en: "💨 There's smoke" },
+                  { tr: "🏠 Evler tehlikede", en: "🏠 Houses in danger" },
+                  { tr: "🐾 Hayvanlar var", en: "🐾 Animals present" }
+                ].map((msg, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setSosMessage(sosMessage + (sosMessage ? " " : "") + msg[lang])}
+                    style={{
+                      padding: "6px 12px",
+                      background: "#f3f4f6",
+                      border: "1px solid #e5e7eb",
+                      borderRadius: 20,
+                      fontSize: "0.85rem",
+                      cursor: "pointer"
+                    }}
+                  >
+                    {msg[lang]}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Send Button */}
+            <button
+              onClick={sendSosReport}
+              disabled={sosSending}
+              style={{
+                width: "100%",
+                padding: "16px 24px",
+                background: sosSending ? "#9ca3af" : "#dc2626",
+                color: "white",
+                border: "none",
+                borderRadius: 12,
+                fontSize: "1.1rem",
+                fontWeight: 700,
+                cursor: sosSending ? "not-allowed" : "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 8
+              }}
+            >
+              {sosSending ? (
+                <>⏳ {lang === "tr" ? "Gönderiliyor..." : "Sending..."}</>
+              ) : (
+                <>📡 {lang === "tr" ? "İHBARI GÖNDER" : "SEND REPORT"}</>
+              )}
+            </button>
+
+            <p style={{ 
+              marginTop: 12, 
+              fontSize: "0.8rem", 
+              color: "#6b7280", 
+              textAlign: "center" 
+            }}>
+              {lang === "tr" 
+                ? "İhbarınız AFAD ve yetkili birimlere iletilecektir"
+                : "Your report will be sent to AFAD and relevant authorities"
+              }
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
