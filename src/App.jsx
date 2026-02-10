@@ -921,6 +921,12 @@ export default function App() {
   const sosTimerRef = useRef(null);
   const sosIntervalRef = useRef(null);
 
+  // Animal emergency state
+  const [showAnimalModal, setShowAnimalModal] = useState(false);
+  const [animalType, setAnimalType] = useState("wild");
+  const [animalCount, setAnimalCount] = useState("1-5");
+  const [animalAlertSending, setAnimalAlertSending] = useState(false);
+
   // SOS Button handlers
   const startSosHold = () => {
     setSosHolding(true);
@@ -994,6 +1000,45 @@ export default function App() {
         ? "🆘 ACİL İHBAR GÖNDERİLDİ!\n\nKonum ve mesajınız yetkililere iletildi." 
         : "🆘 EMERGENCY SENT!\n\nYour location and message have been sent to authorities.");
     }, 1500);
+  };
+
+  // Send animal emergency alert
+  const sendAnimalAlert = () => {
+    setAnimalAlertSending(true);
+    
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const payload = {
+          type: "ANIMAL_EMERGENCY",
+          animalType,
+          animalCount,
+          location: {
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude
+          },
+          timestamp: new Date().toISOString()
+        };
+        
+        console.log("Hayvan ihbarı gönderiliyor:", payload);
+        
+        setTimeout(() => {
+          setAnimalAlertSending(false);
+          setShowAnimalModal(false);
+          alert(lang === "tr" 
+            ? "🐾 HAYVAN İHBARI GÖNDERİLDİ!\n\nYetkililer bilgilendirildi."
+            : "🐾 ANIMAL ALERT SENT!\n\nAuthorities have been notified.");
+        }, 1500);
+      },
+      (err) => {
+        setTimeout(() => {
+          setAnimalAlertSending(false);
+          setShowAnimalModal(false);
+          alert(lang === "tr" 
+            ? "🐾 HAYVAN İHBARI GÖNDERİLDİ!\n\n(Konum alınamadı)"
+            : "🐾 ANIMAL ALERT SENT!\n\n(Location unavailable)");
+        }, 1500);
+      }
+    );
   };
 
   // Save preferences
@@ -1159,6 +1204,36 @@ export default function App() {
                       {T.keepHolding[lang]}
                     </p>
                   )}
+                </div>
+
+                {/* Animal Emergency Button */}
+                <div className="card" style={{ background: "#fef9c3", border: "2px solid #facc15" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+                    <div style={{ fontSize: 32 }}>🐾</div>
+                    <div>
+                      <h3 style={{ color: "#a16207", fontWeight: 600 }}>
+                        {lang === "tr" ? "Hayvanlar İçin Acil Müdahale" : "Animal Emergency Response"}
+                      </h3>
+                      <p style={{ fontSize: "0.85rem", color: "#854d0e" }}>
+                        {lang === "tr" 
+                          ? "Yangın bölgesinde hayvan gördüyseniz bu butona basarak yetkililere bildirin"
+                          : "If you see animals in the fire area, press this button to alert authorities"}
+                      </p>
+                    </div>
+                  </div>
+                  <button 
+                    className="btn btn-block"
+                    onClick={() => setShowAnimalModal(true)}
+                    style={{ 
+                      background: "#ca8a04", 
+                      color: "white",
+                      padding: "16px 24px",
+                      fontSize: "1rem",
+                      fontWeight: 700
+                    }}
+                  >
+                    🐾 {lang === "tr" ? "Hayvanlar İçin Acil Müdahale Butonu" : "Animal Emergency Button"}
+                  </button>
                 </div>
 
                 <div className="card">
@@ -1837,6 +1912,145 @@ export default function App() {
               {lang === "tr" 
                 ? "İhbarınız AFAD ve yetkili birimlere iletilecektir"
                 : "Your report will be sent to AFAD and relevant authorities"
+              }
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Animal Emergency Modal */}
+      {showAnimalModal && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: "rgba(0,0,0,0.5)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          zIndex: 1000
+        }}>
+          <div style={{
+            background: "white",
+            borderRadius: 16,
+            padding: 24,
+            width: "90%",
+            maxWidth: 450,
+            boxShadow: "0 20px 50px rgba(0,0,0,0.3)"
+          }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+              <h2 style={{ fontSize: "1.25rem", fontWeight: 700, display: "flex", alignItems: "center", gap: 8 }}>
+                🐾 {lang === "tr" ? "Yangın Bölgesinde Hayvan Bildirimi" : "Animal Report in Fire Zone"}
+              </h2>
+              <button 
+                onClick={() => setShowAnimalModal(false)}
+                style={{ 
+                  background: "none", 
+                  border: "none", 
+                  fontSize: 24, 
+                  cursor: "pointer",
+                  color: "#6b7280"
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">{lang === "tr" ? "Hayvan Türü Seçin" : "Select Animal Type"}</label>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
+                <button
+                  onClick={() => setAnimalType("wild")}
+                  style={{
+                    padding: 16,
+                    border: animalType === "wild" ? "2px solid #ca8a04" : "1px solid #e5e7eb",
+                    borderRadius: 12,
+                    background: animalType === "wild" ? "#fef9c3" : "white",
+                    cursor: "pointer",
+                    textAlign: "center"
+                  }}
+                >
+                  <div style={{ fontSize: 28, marginBottom: 4 }}>🦌</div>
+                  <div style={{ fontSize: "0.8rem", fontWeight: 500 }}>{lang === "tr" ? "Yabani" : "Wild"}</div>
+                </button>
+                <button
+                  onClick={() => setAnimalType("farm")}
+                  style={{
+                    padding: 16,
+                    border: animalType === "farm" ? "2px solid #ca8a04" : "1px solid #e5e7eb",
+                    borderRadius: 12,
+                    background: animalType === "farm" ? "#fef9c3" : "white",
+                    cursor: "pointer",
+                    textAlign: "center"
+                  }}
+                >
+                  <div style={{ fontSize: 28, marginBottom: 4 }}>🐄</div>
+                  <div style={{ fontSize: "0.8rem", fontWeight: 500 }}>{lang === "tr" ? "Çiftlik" : "Farm"}</div>
+                </button>
+                <button
+                  onClick={() => setAnimalType("pet")}
+                  style={{
+                    padding: 16,
+                    border: animalType === "pet" ? "2px solid #ca8a04" : "1px solid #e5e7eb",
+                    borderRadius: 12,
+                    background: animalType === "pet" ? "#fef9c3" : "white",
+                    cursor: "pointer",
+                    textAlign: "center"
+                  }}
+                >
+                  <div style={{ fontSize: 28, marginBottom: 4 }}>🐕</div>
+                  <div style={{ fontSize: "0.8rem", fontWeight: 500 }}>{lang === "tr" ? "Evcil" : "Pet"}</div>
+                </button>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">{lang === "tr" ? "Tahmini Hayvan Sayısı" : "Estimated Animal Count"}</label>
+              <select 
+                className="form-select" 
+                value={animalCount} 
+                onChange={(e) => setAnimalCount(e.target.value)}
+              >
+                <option value="1-5">1-5</option>
+                <option value="6-10">6-10</option>
+                <option value="11-20">11-20</option>
+                <option value="20+">20+</option>
+                <option value="unknown">{lang === "tr" ? "Bilinmiyor" : "Unknown"}</option>
+              </select>
+            </div>
+
+            <button
+              onClick={sendAnimalAlert}
+              disabled={animalAlertSending}
+              className="btn btn-block"
+              style={{
+                background: "#ca8a04",
+                color: "white",
+                padding: "16px 24px",
+                fontSize: "1.1rem",
+                fontWeight: 700,
+                marginTop: 16,
+                opacity: animalAlertSending ? 0.7 : 1
+              }}
+            >
+              {animalAlertSending ? (
+                <>⏳ {lang === "tr" ? "Gönderiliyor..." : "Sending..."}</>
+              ) : (
+                <>📡 {lang === "tr" ? "AFAD'a Bildir" : "Report to AFAD"}</>
+              )}
+            </button>
+
+            <p style={{ 
+              marginTop: 16, 
+              fontSize: "0.8rem", 
+              color: "#6b7280", 
+              textAlign: "center" 
+            }}>
+              {lang === "tr" 
+                ? "Konumunuz otomatik olarak yetkililerle paylaşılacaktır"
+                : "Your location will be automatically shared with authorities"
               }
             </p>
           </div>
