@@ -777,7 +777,7 @@ const LANGS = { tr: "Türkçe", ku: "Kürtçe", en: "English" };
 // Translations
 const T = {
   // Navigation
-  dashboard: { tr: "Dashboard", ku: "Dashboard", en: "Dashboard" },
+  dashboard: { tr: "Anasayfa", ku: "Serrûpel", en: "Dashboard" },
   pendingReports: { tr: "Bekleyen İhbarlar", ku: "Ragihandinên Li Benda", en: "Pending Reports" },
   fireMap: { tr: "Yangın Haritası", ku: "Nexşeya Agir", en: "Fire Map" },
   volunteers: { tr: "Gönüllüler", ku: "Dilxwaz", en: "Volunteers" },
