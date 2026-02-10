@@ -1192,44 +1192,85 @@ export default function App() {
       case "map":
         return (
           <div>
-            <h1 className="page-title">{T.fireMapTitle[lang]}</h1>
+            <h1 className="page-title">🛰️ {T.fireMapTitle[lang]} - NASA FIRMS</h1>
             <p className="page-subtitle">{T.liveFireTracking[lang]}</p>
             
-            <div className="map-container">
-              {/* Fire zones */}
-              <div className="fire-zone" style={{ width: 120, height: 80, top: "30%", left: "25%" }}></div>
-              <div className="fire-zone" style={{ width: 80, height: 60, top: "50%", right: "30%" }}></div>
-              
-              {/* Safe zones */}
-              <div className="safe-zone" style={{ width: 60, height: 60, top: "20%", right: "15%" }}></div>
-              <div className="safe-zone" style={{ width: 50, height: 50, bottom: "25%", left: "15%" }}></div>
-              
-              {/* Fire markers */}
-              <div style={{ position: "absolute", top: "35%", left: "30%", fontSize: 24 }}>🔥</div>
-              <div style={{ position: "absolute", top: "55%", right: "35%", fontSize: 20 }}>🔥</div>
-              
-              {/* User marker */}
-              <div style={{ position: "absolute", bottom: "20%", left: "50%", fontSize: 24 }}>📍</div>
-              
-              {/* Map controls */}
-              <div className="map-controls">
-                <button className="map-control-btn">➕</button>
-                <button className="map-control-btn">➖</button>
-                <button className="map-control-btn">📍</button>
+            {/* NASA FIRMS Info Card */}
+            <div className="card" style={{ background: "#eff6ff", border: "1px solid #bfdbfe", marginBottom: 16 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <span style={{ fontSize: 32 }}>🛰️</span>
+                <div>
+                  <h4 style={{ color: "#1e40af", marginBottom: 4 }}>NASA FIRMS - {lang === "tr" ? "Uydu Yangın Takip Sistemi" : "Satellite Fire Tracking System"}</h4>
+                  <p style={{ fontSize: "0.85rem", color: "#3b82f6" }}>
+                    {lang === "tr" 
+                      ? "Gerçek zamanlı uydu verileriyle dünya genelindeki aktif yangınları görüntüleyin" 
+                      : "View active fires worldwide with real-time satellite data"}
+                  </p>
+                </div>
               </div>
-              
-              {/* Coordinates overlay */}
-              <div className="map-overlay">
-                <div className="map-coords">Lat: 36.5 - 37.5 N | Lon: 37 - 39 E</div>
+            </div>
+
+            {/* NASA FIRMS Embedded Map */}
+            <div style={{ 
+              borderRadius: 12, 
+              overflow: "hidden", 
+              border: "1px solid #e5e7eb",
+              marginBottom: 16
+            }}>
+              <iframe
+                src="https://firms.modaps.eosdis.nasa.gov/map/#d:24hrs;@35.0,39.0,6.0z"
+                width="100%"
+                height="500"
+                style={{ border: 0 }}
+                title="NASA FIRMS Fire Map"
+                allowFullScreen
+              ></iframe>
+            </div>
+
+            {/* Legend */}
+            <div className="card">
+              <h4 style={{ marginBottom: 12 }}>{lang === "tr" ? "Harita Göstergeleri" : "Map Legend"}</h4>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ width: 16, height: 16, background: "#ff0000", borderRadius: 4 }}></div>
+                  <span style={{ fontSize: "0.85rem" }}>{lang === "tr" ? "Son 24 saat - Yüksek Güvenilirlik" : "Last 24h - High Confidence"}</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ width: 16, height: 16, background: "#ff6600", borderRadius: 4 }}></div>
+                  <span style={{ fontSize: "0.85rem" }}>{lang === "tr" ? "Son 24 saat - Orta Güvenilirlik" : "Last 24h - Medium Confidence"}</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ width: 16, height: 16, background: "#ffcc00", borderRadius: 4 }}></div>
+                  <span style={{ fontSize: "0.85rem" }}>{lang === "tr" ? "Son 24 saat - Düşük Güvenilirlik" : "Last 24h - Low Confidence"}</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ width: 16, height: 16, background: "#ff00ff", borderRadius: 4 }}></div>
+                  <span style={{ fontSize: "0.85rem" }}>{lang === "tr" ? "Son 48 saat" : "Last 48h"}</span>
+                </div>
               </div>
             </div>
             
-            <div className="map-alert">
+            {/* Open in NASA FIRMS Button */}
+            <div style={{ marginTop: 16 }}>
+              <a 
+                href="https://firms.modaps.eosdis.nasa.gov/map/#d:24hrs;@35.0,39.0,6.0z" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="btn btn-primary btn-block"
+                style={{ textDecoration: "none", justifyContent: "center" }}
+              >
+                🌐 {lang === "tr" ? "NASA FIRMS'de Tam Ekran Aç" : "Open Full Screen in NASA FIRMS"}
+              </a>
+            </div>
+
+            <div className="map-alert" style={{ marginTop: 16 }}>
               <span>⚠️</span>
               <div>
-                <strong>{highIntensityFires} {T.highIntensityDetected[lang]}</strong>
+                <strong>{lang === "tr" ? "Canlı Uydu Verisi" : "Live Satellite Data"}</strong>
                 <p style={{ fontSize: "0.85rem", marginTop: 4 }}>
-                  {T.checkEvacuation[lang]}
+                  {lang === "tr" 
+                    ? "Bu harita NASA'nın MODIS ve VIIRS uydularından alınan gerçek zamanlı yangın verilerini göstermektedir."
+                    : "This map shows real-time fire data from NASA's MODIS and VIIRS satellites."}
                 </p>
               </div>
             </div>
