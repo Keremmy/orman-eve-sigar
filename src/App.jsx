@@ -777,20 +777,16 @@ body {
 /* Mobile Sidebar */
 .mobile-sidebar-toggle {
   display: none;
-  position: fixed;
-  top: 18px;
-  right: 16px;
-  width: 44px;
-  height: 44px;
+  width: 100%;
+  padding: 12px 16px;
   background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
   cursor: pointer;
-  z-index: 1001;
-  font-size: 22px;
+  font-size: 16px;
   align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  gap: 10px;
+  color: #4b5563;
 }
 
 @media (max-width: 1024px) {
@@ -2135,6 +2131,14 @@ export default function App() {
           </div>
         </header>
         
+        {/* Mobile Sidebar Toggle Button */}
+        <button 
+          className="mobile-sidebar-toggle"
+          onClick={() => setMobileSidebarOpen(true)}
+        >
+          ☰ {lang === "tr" ? "Menü" : "Menu"}
+        </button>
+
         {/* Page Content */}
         <div className="page-content">
           {renderPage()}
@@ -2463,13 +2467,6 @@ export default function App() {
         </div>
       )}
 
-      {/* Mobile Sidebar Toggle Button */}
-      <button 
-        className="mobile-sidebar-toggle"
-        onClick={() => setMobileSidebarOpen(true)}
-      >
-        ☰
-      </button>
 
       {/* Mobile Sidebar Overlay */}
       <div 
