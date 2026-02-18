@@ -435,17 +435,20 @@ body {
 }
 
 .toggle-switch {
-  width: 48px;
-  height: 28px;
-  background: #e5e7eb;
-  border-radius: 14px;
+  width: 52px;
+  height: 30px;
+  background: #cbd5e1;
+  border-radius: 15px;
   position: relative;
   cursor: pointer;
   transition: background 0.3s;
+  border: 2px solid #94a3b8;
+  flex-shrink: 0;
 }
 
 .toggle-switch.active {
   background: var(--primary);
+  border-color: var(--primary-dark);
 }
 
 .toggle-switch::after {
@@ -455,14 +458,14 @@ body {
   height: 22px;
   background: white;
   border-radius: 50%;
-  top: 3px;
-  left: 3px;
+  top: 2px;
+  left: 2px;
   transition: transform 0.3s;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .toggle-switch.active::after {
-  transform: translateX(20px);
+  transform: translateX(22px);
 }
 
 /* Emergency Contacts */
@@ -1579,7 +1582,7 @@ export default function App() {
               
               <div className="toggle-row">
                 <div className="toggle-info">
-                  <h4>T {T.bigText[lang]}</h4>
+                  <h4>📝 {T.bigText[lang]}</h4>
                   <p>{T.bigTextDesc[lang]}</p>
                 </div>
                 <div className={`toggle-switch ${bigText ? "active" : ""}`} onClick={() => setBigText(!bigText)}></div>
@@ -1949,7 +1952,7 @@ export default function App() {
   ` : '';
 
   return (
-    <div className="app-container" style={{ fontSize: bigText ? "18px" : "14px" }}>
+    <div className="app-container" style={{ fontSize: bigText ? "22px" : "14px" }}>
       <style>{styles}</style>
       <style>{darkModeStyles}</style>
       <style>{colorBlindStyles}</style>
