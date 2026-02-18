@@ -1,4 +1,4 @@
-# 🔥 Orman Eve Sığar - Yangın Destek Sistemi
+# 🌿 Hayat Yeşile Sığar - Yangın Destek Sistemi
 
 Forest fire emergency support and reporting system built for citizens and emergency responders.
 

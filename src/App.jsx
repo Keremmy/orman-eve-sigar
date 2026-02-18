@@ -1,4 +1,4 @@
-// Orman Eve Sığar - Full Featured React App
+// Hayat Yeşile Sığar - Full Featured React App
 import React, { useState, useEffect, useRef } from "react";
 
 // CSS Styles
@@ -765,10 +765,54 @@ body {
   }
   .main-content {
     margin-left: 0;
+    padding-bottom: 80px;
   }
   .stats-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* Mobile Bottom Navigation */
+.mobile-nav {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e5e7eb;
+  padding: 8px 0;
+  z-index: 1000;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 1024px) {
+  .mobile-nav {
+    display: flex;
+    justify-content: space-around;
+  }
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #6b7280;
+  font-size: 0.7rem;
+  transition: color 0.2s;
+}
+
+.mobile-nav-item.active {
+  color: var(--primary);
+}
+
+.mobile-nav-item span:first-child {
+  font-size: 20px;
 }
 `;
 
@@ -879,6 +923,15 @@ const T = {
   noPendingReports: { tr: "Bekleyen ihbar bulunmuyor", ku: "Ragihandinên li bendê tune", en: "No pending reports" },
   emergencyReviewDesc: { tr: "Onay bekleyen acil durum bildirimleri", ku: "Ragihandinên rewşa acîl ên li benda pejirandinê", en: "Emergency reports awaiting review" },
   liveFeedActive: { tr: "Canlı yayın aktif", ku: "Weşana zindî çalak e", en: "Live feed active" },
+  
+  // Education Module
+  education: { tr: "Eğitim Modülü", ku: "Modula Perwerdehiyê", en: "Education Module" },
+  educationDesc: { tr: "Yangın öncesi, sırası ve sonrası ne yapmalısınız öğrenin", ku: "Fêr bibin ka berî, di dema û piştî agir de çi bikin", en: "Learn what to do before, during and after a fire" },
+  beforeFire: { tr: "Yangın Öncesi", ku: "Berî Agir", en: "Before Fire" },
+  duringFire: { tr: "Yangın Sırası", ku: "Di Dema Agir de", en: "During Fire" },
+  afterFire: { tr: "Yangın Sonrası", ku: "Piştî Agir", en: "After Fire" },
+  watchVideo: { tr: "Eğitim Videosunu İzle", ku: "Vîdyoya Perwerdehiyê Temaşe Bike", en: "Watch Training Video" },
+  stepByStep: { tr: "Adım Adım Talimatlar", ku: "Rêwerzên Gav bi Gav", en: "Step by Step Instructions" },
 };
 
 export default function App() {
@@ -910,6 +963,9 @@ export default function App() {
   
   // FAQ state
   const [openFaq, setOpenFaq] = useState(null);
+  
+  // Education tab state
+  const [educationTab, setEducationTab] = useState("before");
 
   // SOS Button state
   const [sosProgress, setSosProgress] = useState(0);
@@ -1052,6 +1108,7 @@ export default function App() {
     { id: "reports", icon: "⚠️", label: T.pendingReports[lang] },
     { id: "map", icon: "🔥", label: T.fireMap[lang], badge: highIntensityFires },
     { id: "volunteers", icon: "👥", label: T.volunteers[lang] },
+    { id: "education", icon: "🎓", label: T.education[lang] },
   ];
 
   const toolItems = [
@@ -1298,12 +1355,52 @@ export default function App() {
       case "map":
         return (
           <div>
-            <h1 className="page-title">🛰️ {T.fireMapTitle[lang]} - NASA FIRMS</h1>
+            <h1 className="page-title">🗺️ {T.fireMapTitle[lang]}</h1>
             <p className="page-subtitle">{T.liveFireTracking[lang]}</p>
             
-            {/* NASA FIRMS Info Card */}
+            {/* Google Maps Section */}
+            <div className="card" style={{ marginBottom: 16 }}>
+              <h3 className="card-title" style={{ marginBottom: 16 }}>📍 {lang === "tr" ? "Konum Haritası" : "Location Map"}</h3>
+              <div style={{
+                position: "relative",
+                paddingBottom: "56.25%",
+                height: 0,
+                overflow: "hidden",
+                borderRadius: 12,
+                border: "1px solid #e5e7eb"
+              }}>
+                <iframe
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    border: "none"
+                  }}
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6243874.239498022!2d32.0!3d39.0!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14b0155c964f2671%3A0x40d9dbd42a625f2a!2sT%C3%BCrkiye!5e0!3m2!1str!2str!4v1699999999999!5m2!1str!2str"
+                  title="Google Maps - Türkiye"
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                ></iframe>
+              </div>
+              <div style={{ marginTop: 12, display: "flex", gap: 8, flexWrap: "wrap" }}>
+                <a 
+                  href="https://www.google.com/maps/@39.0,35.0,6z" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="btn btn-outline"
+                  style={{ textDecoration: "none" }}
+                >
+                  🗺️ {lang === "tr" ? "Google Maps'te Aç" : "Open in Google Maps"}
+                </a>
+              </div>
+            </div>
+
+            {/* NASA FIRMS Section */}
             <div className="card" style={{ background: "#eff6ff", border: "1px solid #bfdbfe", marginBottom: 16 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
                 <span style={{ fontSize: 32 }}>🛰️</span>
                 <div>
                   <h4 style={{ color: "#1e40af", marginBottom: 4 }}>NASA FIRMS - {lang === "tr" ? "Uydu Yangın Takip Sistemi" : "Satellite Fire Tracking System"}</h4>
@@ -1314,69 +1411,15 @@ export default function App() {
                   </p>
                 </div>
               </div>
-            </div>
-
-            {/* Map Preview Card */}
-            <div style={{ 
-              borderRadius: 12, 
-              overflow: "hidden", 
-              border: "1px solid #e5e7eb",
-              marginBottom: 16,
-              background: "linear-gradient(135deg, #1a365d 0%, #2c5282 50%, #2b6cb0 100%)",
-              position: "relative",
-              height: 400
-            }}>
-              {/* Map visualization */}
-              <div style={{ position: "absolute", inset: 0, opacity: 0.3 }}>
-                <div style={{ position: "absolute", top: "20%", left: "30%", width: 8, height: 8, background: "#ff0000", borderRadius: "50%", boxShadow: "0 0 20px #ff0000" }}></div>
-                <div style={{ position: "absolute", top: "35%", left: "45%", width: 12, height: 12, background: "#ff4400", borderRadius: "50%", boxShadow: "0 0 25px #ff4400" }}></div>
-                <div style={{ position: "absolute", top: "50%", left: "55%", width: 6, height: 6, background: "#ff6600", borderRadius: "50%", boxShadow: "0 0 15px #ff6600" }}></div>
-                <div style={{ position: "absolute", top: "60%", left: "35%", width: 10, height: 10, background: "#ff0000", borderRadius: "50%", boxShadow: "0 0 20px #ff0000" }}></div>
-                <div style={{ position: "absolute", top: "25%", left: "60%", width: 8, height: 8, background: "#ff8800", borderRadius: "50%", boxShadow: "0 0 18px #ff8800" }}></div>
-              </div>
-              
-              {/* Center content */}
-              <div style={{ 
-                position: "absolute", 
-                inset: 0, 
-                display: "flex", 
-                flexDirection: "column",
-                alignItems: "center", 
-                justifyContent: "center",
-                color: "white",
-                textAlign: "center",
-                padding: 24
-              }}>
-                <div style={{ fontSize: 64, marginBottom: 16 }}>🌍🔥</div>
-                <h3 style={{ fontSize: "1.5rem", marginBottom: 8 }}>
-                  {lang === "tr" ? "NASA FIRMS Yangın Haritası" : "NASA FIRMS Fire Map"}
-                </h3>
-                <p style={{ marginBottom: 24, opacity: 0.9 }}>
-                  {lang === "tr" 
-                    ? "Türkiye ve dünya genelindeki aktif yangınları gerçek zamanlı görüntüleyin"
-                    : "View active fires in Turkey and worldwide in real-time"}
-                </p>
-                <a 
-                  href="https://firms.modaps.eosdis.nasa.gov/map/#d:24hrs;@39.0,35.0,6.0z" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  style={{
-                    background: "#dc2626",
-                    color: "white",
-                    padding: "16px 32px",
-                    borderRadius: 12,
-                    textDecoration: "none",
-                    fontWeight: 700,
-                    fontSize: "1.1rem",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 8,
-                    boxShadow: "0 4px 15px rgba(220, 38, 38, 0.4)"
-                  }}
-                >
-                  🛰️ {lang === "tr" ? "NASA FIRMS'i Aç" : "Open NASA FIRMS"}
-                </a>
-              </div>
+              <a 
+                href="https://firms.modaps.eosdis.nasa.gov/map/#d:24hrs;@39.0,35.0,6.0z" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="btn btn-primary btn-block"
+                style={{ textDecoration: "none", justifyContent: "center" }}
+              >
+                🛰️ {lang === "tr" ? "NASA FIRMS Yangın Haritasını Aç" : "Open NASA FIRMS Fire Map"}
+              </a>
             </div>
 
             {/* Features Grid */}
@@ -1410,7 +1453,7 @@ export default function App() {
 
             {/* Legend */}
             <div className="card">
-              <h4 style={{ marginBottom: 12 }}>{lang === "tr" ? "Harita Göstergeleri" : "Map Legend"}</h4>
+              <h4 style={{ marginBottom: 12 }}>{lang === "tr" ? "NASA FIRMS Göstergeleri" : "NASA FIRMS Legend"}</h4>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <div style={{ width: 16, height: 16, background: "#ff0000", borderRadius: 4 }}></div>
@@ -1437,8 +1480,8 @@ export default function App() {
                 <strong>{lang === "tr" ? "Nasıl Kullanılır?" : "How to Use?"}</strong>
                 <p style={{ fontSize: "0.85rem", marginTop: 4 }}>
                   {lang === "tr" 
-                    ? "Yukarıdaki butona tıklayarak NASA FIRMS haritasını yeni sekmede açın. Haritada kırmızı noktalar aktif yangınları gösterir."
-                    : "Click the button above to open NASA FIRMS map in a new tab. Red dots on the map indicate active fires."}
+                    ? "Yukarıdaki Google Maps ile konumunuzu görün. NASA FIRMS butonu ile aktif yangınları takip edin."
+                    : "View your location with Google Maps above. Track active fires with NASA FIRMS button."}
                 </p>
               </div>
             </div>
@@ -1583,6 +1626,208 @@ export default function App() {
           </div>
         );
 
+      case "education":
+        return (
+          <div>
+            <h1 className="page-title">🎓 {T.education[lang]}</h1>
+            <p className="page-subtitle">{T.educationDesc[lang]}</p>
+
+            {/* Video Section */}
+            <div className="card" style={{ marginBottom: 24 }}>
+              <h3 className="card-title" style={{ marginBottom: 16 }}>🎬 {T.watchVideo[lang]}</h3>
+              <div style={{
+                position: "relative",
+                paddingBottom: "56.25%",
+                height: 0,
+                overflow: "hidden",
+                borderRadius: 12,
+                background: "#1f2937"
+              }}>
+                <iframe
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    border: "none"
+                  }}
+                  src="https://www.youtube.com/embed/wvpLhnZLkRc"
+                  title="Yangın Güvenliği Eğitimi"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                ></iframe>
+              </div>
+              <p style={{ marginTop: 12, fontSize: "0.85rem", color: "#6b7280", textAlign: "center" }}>
+                {lang === "tr" ? "AFAD Yangın Güvenliği Eğitim Videosu" : "AFAD Fire Safety Training Video"}
+              </p>
+            </div>
+
+            {/* Tab Selection */}
+            <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+              {["before", "during", "after"].map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setEducationTab(tab)}
+                  style={{
+                    flex: 1,
+                    padding: "12px 16px",
+                    borderRadius: 8,
+                    border: educationTab === tab ? "2px solid var(--primary)" : "1px solid #e5e7eb",
+                    background: educationTab === tab ? "#fef2f2" : "white",
+                    color: educationTab === tab ? "var(--primary)" : "#4b5563",
+                    fontWeight: educationTab === tab ? 600 : 400,
+                    cursor: "pointer",
+                    fontSize: "0.9rem"
+                  }}
+                >
+                  {tab === "before" && "🛡️ "}{tab === "during" && "🔥 "}{tab === "after" && "🏠 "}
+                  {tab === "before" ? T.beforeFire[lang] : tab === "during" ? T.duringFire[lang] : T.afterFire[lang]}
+                </button>
+              ))}
+            </div>
+
+            {/* Step by Step Instructions */}
+            <div className="card">
+              <h3 className="card-title" style={{ marginBottom: 16 }}>
+                📋 {T.stepByStep[lang]} - {educationTab === "before" ? T.beforeFire[lang] : educationTab === "during" ? T.duringFire[lang] : T.afterFire[lang]}
+              </h3>
+
+              {educationTab === "before" && (
+                <div>
+                  {[
+                    { tr: "Evinizin etrafındaki kuru otları ve çalıları temizleyin", en: "Clear dry grass and bushes around your home", ku: "Giyayên hişk û deviyên li dora mala xwe paqij bikin" },
+                    { tr: "Acil durum çantası hazırlayın (su, ilaç, evrak, el feneri)", en: "Prepare an emergency bag (water, medicine, documents, flashlight)", ku: "Çenteyeke acîl amade bikin (av, derman, belge, çira destê)" },
+                    { tr: "Aile ile buluşma noktası belirleyin", en: "Determine a meeting point with family", ku: "Bi malbatê re cihê hevdîtinê diyar bikin" },
+                    { tr: "Acil numaraları (110, 112, 122) telefonunuza kaydedin", en: "Save emergency numbers (110, 112, 122) to your phone", ku: "Hejmarên acîl (110, 112, 122) li têlefona xwe tomar bikin" },
+                    { tr: "Tahliye rotalarını önceden öğrenin", en: "Learn evacuation routes in advance", ku: "Rêyên derketinê ji berê fêr bibin" },
+                    { tr: "Bahçe hortumunun çalıştığından emin olun", en: "Make sure the garden hose is working", ku: "Piştrast bikin ku hortûma baxçe dixebite" },
+                    { tr: "Yanıcı maddeleri evden uzak tutun", en: "Keep flammable materials away from home", ku: "Madeyên şewitok ji malê dûr bihêlin" },
+                    { tr: "Komşularınızla iletişim planı yapın", en: "Make a communication plan with neighbors", ku: "Bi cîranên xwe re plana ragihandinê çêbikin" }
+                  ].map((step, index) => (
+                    <div key={index} style={{
+                      display: "flex",
+                      gap: 16,
+                      padding: "16px 0",
+                      borderBottom: index < 7 ? "1px solid #f3f4f6" : "none"
+                    }}>
+                      <div style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: "50%",
+                        background: "#dcfce7",
+                        color: "#16a34a",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontWeight: 700,
+                        flexShrink: 0
+                      }}>
+                        {index + 1}
+                      </div>
+                      <div style={{ color: "#374151" }}>{step[lang]}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {educationTab === "during" && (
+                <div>
+                  {[
+                    { tr: "Panik yapmayın, sakin kalın", en: "Don't panic, stay calm", ku: "Panîk nekin, aram bimînin" },
+                    { tr: "Hemen 110 (İtfaiye) veya 112'yi arayın", en: "Call 110 (Fire Department) or 112 immediately", ku: "Tavilê 110 (Agirkuj) an 112 bang bikin" },
+                    { tr: "Pencere ve kapıları kapatın (havalandırmayı engelleyin)", en: "Close windows and doors (prevent ventilation)", ku: "Pencere û derîyan bigirin (hewayê asteng bikin)" },
+                    { tr: "Islak havlu ile ağız ve burnunuzu kapatın", en: "Cover your mouth and nose with a wet towel", ku: "Devê xwe û pozê xwe bi destmalek şil bigirin" },
+                    { tr: "Alçakta kalın - duman yukarı çıkar", en: "Stay low - smoke rises up", ku: "Li jêr bimînin - dûman bilind dibe" },
+                    { tr: "Tahliye rotasını kullanarak bölgeden uzaklaşın", en: "Leave the area using the evacuation route", ku: "Bi rêya derketinê ji deverê dûr bikevin" },
+                    { tr: "Asla yangına doğru koşmayın", en: "Never run towards the fire", ku: "Tu carî ber bi agir ve nerevîn" },
+                    { tr: "Araçla kaçıyorsanız farları açın, camları kapatın", en: "If escaping by car, turn on lights, close windows", ku: "Heke bi erebê direvin, çirayan vêxin, caman bigirin" },
+                    { tr: "Yetkililerin talimatlarına uyun", en: "Follow the instructions of authorities", ku: "Li gorî talîmatên rayedaran tevbigerin" }
+                  ].map((step, index) => (
+                    <div key={index} style={{
+                      display: "flex",
+                      gap: 16,
+                      padding: "16px 0",
+                      borderBottom: index < 8 ? "1px solid #f3f4f6" : "none"
+                    }}>
+                      <div style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: "50%",
+                        background: "#fee2e2",
+                        color: "#dc2626",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontWeight: 700,
+                        flexShrink: 0
+                      }}>
+                        {index + 1}
+                      </div>
+                      <div style={{ color: "#374151" }}>{step[lang]}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {educationTab === "after" && (
+                <div>
+                  {[
+                    { tr: "Yetkililer izin vermeden bölgeye dönmeyin", en: "Don't return to the area without permission from authorities", ku: "Bêyî destûra rayedaran vegerin deverê" },
+                    { tr: "Yanmış yapılara girmeyin - çökme riski var", en: "Don't enter burned buildings - risk of collapse", ku: "Nekevin avahiyên şewitî - xetera hilweşînê heye" },
+                    { tr: "Elektrik ve gaz kaçağı kontrolü yapın", en: "Check for electricity and gas leaks", ku: "Kontrola elektrîk û gazê bikin" },
+                    { tr: "İçme suyunun güvenli olduğundan emin olun", en: "Make sure drinking water is safe", ku: "Piştrast bikin ku ava vexwarinê ewle ye" },
+                    { tr: "Hasar tespiti için fotoğraf çekin", en: "Take photos for damage assessment", ku: "Ji bo nirxandina zirarê wêne bikişînin" },
+                    { tr: "Sigorta şirketinize başvurun", en: "Contact your insurance company", ku: "Bi şirketa sîgortaya xwe re têkilî daynin" },
+                    { tr: "Psikolojik destek almaktan çekinmeyin", en: "Don't hesitate to get psychological support", ku: "Ji piştgiriya derûnî dudilî nebin" },
+                    { tr: "Komşularınıza yardım edin", en: "Help your neighbors", ku: "Alîkariya cîranên xwe bikin" }
+                  ].map((step, index) => (
+                    <div key={index} style={{
+                      display: "flex",
+                      gap: 16,
+                      padding: "16px 0",
+                      borderBottom: index < 7 ? "1px solid #f3f4f6" : "none"
+                    }}>
+                      <div style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: "50%",
+                        background: "#dbeafe",
+                        color: "#2563eb",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        fontWeight: 700,
+                        flexShrink: 0
+                      }}>
+                        {index + 1}
+                      </div>
+                      <div style={{ color: "#374151" }}>{step[lang]}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Quick Tips Card */}
+            <div className="card" style={{ marginTop: 16, background: "#fffbeb", border: "1px solid #fcd34d" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <span style={{ fontSize: 32 }}>💡</span>
+                <div>
+                  <h4 style={{ color: "#92400e", marginBottom: 4 }}>
+                    {lang === "tr" ? "Önemli Hatırlatma" : "Important Reminder"}
+                  </h4>
+                  <p style={{ fontSize: "0.9rem", color: "#a16207" }}>
+                    {lang === "tr" 
+                      ? "Acil durumlarda önce kendinizi güvene alın, sonra başkalarına yardım edin. Asla kahramanlık yapmaya çalışmayın!"
+                      : "In emergencies, secure yourself first, then help others. Never try to be a hero!"}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
+
       case "help":
         return (
           <div>
@@ -1640,16 +1885,74 @@ export default function App() {
     }
   };
 
+  // Apply dark mode styles
+  const darkModeStyles = darkMode ? `
+    body { background: #111827 !important; }
+    .app-container { background: #111827; color: #f3f4f6; }
+    .sidebar { background: #1f2937; border-color: #374151; }
+    .sidebar-title, .sidebar-subtitle { color: #f3f4f6; }
+    .nav-section-title { color: #9ca3af; }
+    .nav-item { color: #d1d5db; }
+    .nav-item:hover { background: #374151; }
+    .nav-item.active { background: #7f1d1d; color: #fca5a5; }
+    .main-content { background: #111827; }
+    .top-header { background: #1f2937; border-color: #374151; }
+    .header-title { color: #f3f4f6; }
+    .header-mode { color: #9ca3af; }
+    .page-title { color: #f3f4f6; }
+    .page-subtitle { color: #9ca3af; }
+    .card { background: #1f2937; border-color: #374151; color: #f3f4f6; }
+    .card-title { color: #f3f4f6; }
+    .stat-card { background: #1f2937; border-color: #374151; }
+    .stat-value { color: #f3f4f6; }
+    .stat-label { color: #9ca3af; }
+    .form-input, .form-select { background: #374151; border-color: #4b5563; color: #f3f4f6; }
+    .btn-outline { background: #374151; border-color: #4b5563; color: #f3f4f6; }
+    .toggle-info h4 { color: #f3f4f6; }
+    .toggle-info p { color: #9ca3af; }
+    .toggle-row { border-color: #374151; }
+    .faq-question { background: #1f2937; color: #f3f4f6; }
+    .faq-answer { color: #9ca3af; }
+    .faq-item { border-color: #374151; }
+    .emergency-card { background: #7f1d1d; border-color: #991b1b; }
+    .emergency-item { border-color: #991b1b; color: #fca5a5; }
+    .mobile-nav { background: #1f2937; border-color: #374151; }
+    .mobile-nav-item { color: #9ca3af; }
+    .mobile-nav-item.active { color: #fca5a5; }
+    .lang-select { background: #374151; border-color: #4b5563; color: #f3f4f6; }
+    .icon-btn { background: #374151; border-color: #4b5563; color: #f3f4f6; }
+  ` : '';
+
+  // Apply color blind styles (high contrast patterns)
+  const colorBlindStyles = colorBlind ? `
+    :root {
+      --primary: #0066cc;
+      --primary-dark: #004499;
+      --success: #006600;
+      --warning: #cc6600;
+    }
+    .fire-zone { border-style: solid; border-width: 4px; }
+    .safe-zone { border-style: dashed; border-width: 4px; }
+    .stat-icon { border: 3px solid currentColor; }
+    .nav-item.active { border-left: 4px solid var(--primary); }
+    .btn-primary { border: 2px solid #000; }
+    .toggle-switch.active { background: #0066cc; border: 2px solid #004499; }
+    .emergency-number { text-decoration: underline; }
+    .status-online { border: 2px solid #006600; }
+  ` : '';
+
   return (
     <div className="app-container" style={{ fontSize: bigText ? "18px" : "14px" }}>
       <style>{styles}</style>
+      <style>{darkModeStyles}</style>
+      <style>{colorBlindStyles}</style>
       
       {/* Sidebar */}
       <aside className="sidebar">
         <div className="sidebar-header">
           <div className="sidebar-logo">🔥</div>
           <div>
-            <div className="sidebar-title">Orman Eve Sığar</div>
+            <div className="sidebar-title">Hayat Yeşile Sığar</div>
             <div className="sidebar-subtitle">{mode === "afad" ? "AFAD / İtfaiye Modu" : "AFAD / İtfaiye Modu"}</div>
           </div>
         </div>
@@ -1700,7 +2003,7 @@ export default function App() {
           <div className="header-left">
             <div className="header-logo">🔥</div>
             <div>
-              <div className="header-title">Orman Eve Sığar</div>
+              <div className="header-title">Hayat Yeşile Sığar</div>
               <div className="header-mode">{mode === "afad" ? "AFAD / İtfaiye Modu" : "AFAD / İtfaiye Modu"}</div>
             </div>
           </div>
@@ -2056,6 +2359,45 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* Mobile Bottom Navigation */}
+      <nav className="mobile-nav">
+        <button 
+          className={`mobile-nav-item ${currentPage === "dashboard" ? "active" : ""}`}
+          onClick={() => setCurrentPage("dashboard")}
+        >
+          <span>🏠</span>
+          <span>{T.dashboard[lang]}</span>
+        </button>
+        <button 
+          className={`mobile-nav-item ${currentPage === "map" ? "active" : ""}`}
+          onClick={() => setCurrentPage("map")}
+        >
+          <span>🗺️</span>
+          <span>{T.fireMap[lang]}</span>
+        </button>
+        <button 
+          className={`mobile-nav-item ${currentPage === "education" ? "active" : ""}`}
+          onClick={() => setCurrentPage("education")}
+        >
+          <span>🎓</span>
+          <span>{T.education[lang]}</span>
+        </button>
+        <button 
+          className={`mobile-nav-item ${currentPage === "volunteers" ? "active" : ""}`}
+          onClick={() => setCurrentPage("volunteers")}
+        >
+          <span>👥</span>
+          <span>{T.volunteers[lang]}</span>
+        </button>
+        <button 
+          className={`mobile-nav-item ${currentPage === "settings" ? "active" : ""}`}
+          onClick={() => setCurrentPage("settings")}
+        >
+          <span>⚙️</span>
+          <span>{T.settings[lang]}</span>
+        </button>
+      </nav>
     </div>
   );
 }
