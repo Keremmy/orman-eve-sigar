@@ -1652,7 +1652,7 @@ export default function App() {
                     height: "100%",
                     border: "none"
                   }}
-                  src="https://www.youtube.com/embed/wvpLhnZLkRc"
+                  src="https://www.youtube.com/embed/NP7JAGGLFy0"
                   title="Yangın Güvenliği Eğitimi"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
