@@ -768,54 +768,140 @@ body {
   }
   .main-content {
     margin-left: 0;
-    padding-bottom: 80px;
   }
   .stats-grid {
     grid-template-columns: 1fr;
   }
 }
 
-/* Mobile Bottom Navigation */
-.mobile-nav {
+/* Mobile Sidebar */
+.mobile-sidebar-toggle {
   display: none;
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  top: 16px;
+  left: 16px;
+  width: 44px;
+  height: 44px;
   background: white;
-  border-top: 1px solid #e5e7eb;
-  padding: 8px 0;
-  z-index: 1000;
-  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  cursor: pointer;
+  z-index: 1001;
+  font-size: 22px;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 @media (max-width: 1024px) {
-  .mobile-nav {
+  .mobile-sidebar-toggle {
     display: flex;
-    justify-content: space-around;
   }
+}
+
+.mobile-sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1001;
+}
+
+.mobile-sidebar-overlay.open {
+  display: block;
+}
+
+.mobile-sidebar {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  background: white;
+  z-index: 1002;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  flex-direction: column;
+  overflow-y: auto;
+  box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 1024px) {
+  .mobile-sidebar {
+    display: flex;
+  }
+}
+
+.mobile-sidebar.open {
+  transform: translateX(0);
+}
+
+.mobile-sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mobile-sidebar-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.mobile-sidebar-close {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: #f3f4f6;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-nav-list {
+  padding: 16px 12px;
+  flex: 1;
 }
 
 .mobile-nav-item {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 4px;
-  padding: 8px 12px;
+  gap: 12px;
+  padding: 14px 16px;
   border: none;
   background: none;
   cursor: pointer;
-  color: #6b7280;
-  font-size: 0.7rem;
-  transition: color 0.2s;
+  color: #4b5563;
+  font-size: 0.95rem;
+  border-radius: 8px;
+  width: 100%;
+  text-align: left;
+  transition: all 0.2s;
+}
+
+.mobile-nav-item:hover {
+  background: #f3f4f6;
 }
 
 .mobile-nav-item.active {
+  background: #fef2f2;
   color: var(--primary);
+  font-weight: 600;
 }
 
 .mobile-nav-item span:first-child {
   font-size: 20px;
+  width: 24px;
+  text-align: center;
 }
 `;
 
@@ -971,6 +1057,9 @@ export default function App() {
   
   // Education tab state
   const [educationTab, setEducationTab] = useState("before");
+  
+  // Mobile sidebar state
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   // SOS Button state
   const [sosProgress, setSosProgress] = useState(0);
@@ -1926,9 +2015,13 @@ export default function App() {
     .faq-item { border-color: #374151; }
     .emergency-card { background: #7f1d1d; border-color: #991b1b; }
     .emergency-item { border-color: #991b1b; color: #fca5a5; }
-    .mobile-nav { background: #1f2937; border-color: #374151; }
-    .mobile-nav-item { color: #9ca3af; }
-    .mobile-nav-item.active { color: #fca5a5; }
+    .mobile-sidebar { background: #1f2937; }
+    .mobile-sidebar-header { border-color: #374151; }
+    .mobile-sidebar-close { background: #374151; color: #f3f4f6; }
+    .mobile-sidebar-toggle { background: #1f2937; border-color: #374151; color: #f3f4f6; }
+    .mobile-nav-item { color: #d1d5db; }
+    .mobile-nav-item:hover { background: #374151; }
+    .mobile-nav-item.active { background: #7f1d1d; color: #fca5a5; }
     .lang-select { background: #374151; border-color: #4b5563; color: #f3f4f6; }
     .icon-btn { background: #374151; border-color: #4b5563; color: #f3f4f6; }
   ` : '';
@@ -2370,51 +2463,59 @@ export default function App() {
         </div>
       )}
 
-      {/* Mobile Bottom Navigation */}
-      <nav className="mobile-nav">
-        <button 
-          className={`mobile-nav-item ${currentPage === "dashboard" ? "active" : ""}`}
-          onClick={() => setCurrentPage("dashboard")}
-        >
-          <span>🏠</span>
-          <span>{T.dashboard[lang]}</span>
-        </button>
-        <button 
-          className={`mobile-nav-item ${currentPage === "maps" ? "active" : ""}`}
-          onClick={() => setCurrentPage("maps")}
-        >
-          <span>🗺️</span>
-          <span>{T.maps[lang]}</span>
-        </button>
-        <button 
-          className={`mobile-nav-item ${currentPage === "fires" ? "active" : ""}`}
-          onClick={() => setCurrentPage("fires")}
-        >
-          <span>🔥</span>
-          <span>{T.fires[lang]}</span>
-        </button>
-        <button 
-          className={`mobile-nav-item ${currentPage === "education" ? "active" : ""}`}
-          onClick={() => setCurrentPage("education")}
-        >
-          <span>🎓</span>
-          <span>{T.education[lang]}</span>
-        </button>
-        <button 
-          className={`mobile-nav-item ${currentPage === "volunteers" ? "active" : ""}`}
-          onClick={() => setCurrentPage("volunteers")}
-        >
-          <span>👥</span>
-          <span>{T.volunteers[lang]}</span>
-        </button>
-        <button 
-          className={`mobile-nav-item ${currentPage === "settings" ? "active" : ""}`}
-          onClick={() => setCurrentPage("settings")}
-        >
-          <span>⚙️</span>
-          <span>{T.settings[lang]}</span>
-        </button>
-      </nav>
+      {/* Mobile Sidebar Toggle Button */}
+      <button 
+        className="mobile-sidebar-toggle"
+        onClick={() => setMobileSidebarOpen(true)}
+      >
+        ☰
+      </button>
+
+      {/* Mobile Sidebar Overlay */}
+      <div 
+        className={`mobile-sidebar-overlay ${mobileSidebarOpen ? "open" : ""}`}
+        onClick={() => setMobileSidebarOpen(false)}
+      ></div>
+
+      {/* Mobile Sidebar */}
+      <div className={`mobile-sidebar ${mobileSidebarOpen ? "open" : ""}`}>
+        <div className="mobile-sidebar-header">
+          <div className="mobile-sidebar-header-left">
+            <div className="sidebar-logo">🔥</div>
+            <div>
+              <div className="sidebar-title">Hayat Yeşile Sığar</div>
+            </div>
+          </div>
+          <button 
+            className="mobile-sidebar-close"
+            onClick={() => setMobileSidebarOpen(false)}
+          >
+            ✕
+          </button>
+        </div>
+        <div className="mobile-nav-list">
+          {[
+            { id: "dashboard", icon: "📊", label: T.dashboard[lang] },
+            { id: "reports", icon: "⚠️", label: T.pendingReports[lang] },
+            { id: "maps", icon: "🗺️", label: T.maps[lang] },
+            { id: "fires", icon: "🔥", label: T.fires[lang] },
+            { id: "volunteers", icon: "👥", label: T.volunteers[lang] },
+            { id: "education", icon: "🎓", label: T.education[lang] },
+            { id: "offline", icon: "📶", label: T.offlineMap[lang] },
+            { id: "settings", icon: "⚙️", label: T.settings[lang] },
+            { id: "help", icon: "❓", label: T.help[lang] },
+          ].map(item => (
+            <button
+              key={item.id}
+              className={`mobile-nav-item ${currentPage === item.id ? "active" : ""}`}
+              onClick={() => { setCurrentPage(item.id); setMobileSidebarOpen(false); }}
+            >
+              <span>{item.icon}</span>
+              <span>{item.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
