@@ -778,8 +778,8 @@ body {
 .mobile-sidebar-toggle {
   display: none;
   position: fixed;
-  top: 16px;
-  left: 16px;
+  top: 18px;
+  right: 16px;
   width: 44px;
   height: 44px;
   background: white;
