@@ -824,6 +824,8 @@ const T = {
   dashboard: { tr: "Anasayfa", ku: "Serrûpel", en: "Dashboard" },
   pendingReports: { tr: "Bekleyen İhbarlar", ku: "Ragihandinên Li Benda", en: "Pending Reports" },
   fireMap: { tr: "Yangın Haritası", ku: "Nexşeya Agir", en: "Fire Map" },
+  maps: { tr: "Haritalar", ku: "Nexşe", en: "Maps" },
+  fires: { tr: "Yangınlar", ku: "Agir", en: "Fires" },
   volunteers: { tr: "Gönüllüler", ku: "Dilxwaz", en: "Volunteers" },
   droneThermal: { tr: "Drone Termal Görüntü", ku: "Dîmena Termal a Dronê", en: "Drone Thermal" },
   offlineMap: { tr: "Çevrimdışı Kaçış Haritası", ku: "Nexşeya Revînê ya Offline", en: "Offline Escape Map" },
@@ -1106,7 +1108,8 @@ export default function App() {
   const navItems = [
     { id: "dashboard", icon: "📊", label: T.dashboard[lang] },
     { id: "reports", icon: "⚠️", label: T.pendingReports[lang] },
-    { id: "map", icon: "🔥", label: T.fireMap[lang], badge: highIntensityFires },
+    { id: "maps", icon: "🗺️", label: T.maps[lang] },
+    { id: "fires", icon: "🔥", label: T.fires[lang], badge: highIntensityFires },
     { id: "volunteers", icon: "👥", label: T.volunteers[lang] },
     { id: "education", icon: "🎓", label: T.education[lang] },
   ];
@@ -1352,13 +1355,12 @@ export default function App() {
           </div>
         );
 
-      case "map":
+      case "maps":
         return (
           <div>
-            <h1 className="page-title">🗺️ {T.fireMapTitle[lang]}</h1>
-            <p className="page-subtitle">{T.liveFireTracking[lang]}</p>
+            <h1 className="page-title">🗺️ {T.maps[lang]}</h1>
+            <p className="page-subtitle">{lang === "tr" ? "Google Maps ile konumunuzu ve çevrenizi görüntüleyin" : "View your location and surroundings with Google Maps"}</p>
             
-            {/* Google Maps Section */}
             <div className="card" style={{ marginBottom: 16 }}>
               <h3 className="card-title" style={{ marginBottom: 16 }}>📍 {lang === "tr" ? "Konum Haritası" : "Location Map"}</h3>
               <div style={{
@@ -1397,8 +1399,15 @@ export default function App() {
                 </a>
               </div>
             </div>
+          </div>
+        );
 
-            {/* NASA FIRMS Section */}
+      case "fires":
+        return (
+          <div>
+            <h1 className="page-title">🔥 {T.fires[lang]} - NASA FIRMS</h1>
+            <p className="page-subtitle">{lang === "tr" ? "Gerçek zamanlı uydu verileriyle aktif yangınları takip edin" : "Track active fires with real-time satellite data"}</p>
+
             <div className="card" style={{ background: "#eff6ff", border: "1px solid #bfdbfe", marginBottom: 16 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
                 <span style={{ fontSize: 32 }}>🛰️</span>
@@ -1422,7 +1431,6 @@ export default function App() {
               </a>
             </div>
 
-            {/* Features Grid */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 16 }}>
               <div className="card" style={{ textAlign: "center", padding: 16 }}>
                 <div style={{ fontSize: 32, marginBottom: 8 }}>🛰️</div>
@@ -1451,9 +1459,8 @@ export default function App() {
               </div>
             </div>
 
-            {/* Legend */}
             <div className="card">
-              <h4 style={{ marginBottom: 12 }}>{lang === "tr" ? "NASA FIRMS Göstergeleri" : "NASA FIRMS Legend"}</h4>
+              <h4 style={{ marginBottom: 12 }}>{lang === "tr" ? "Harita Göstergeleri" : "Map Legend"}</h4>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 12 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <div style={{ width: 16, height: 16, background: "#ff0000", borderRadius: 4 }}></div>
@@ -1480,8 +1487,8 @@ export default function App() {
                 <strong>{lang === "tr" ? "Nasıl Kullanılır?" : "How to Use?"}</strong>
                 <p style={{ fontSize: "0.85rem", marginTop: 4 }}>
                   {lang === "tr" 
-                    ? "Yukarıdaki Google Maps ile konumunuzu görün. NASA FIRMS butonu ile aktif yangınları takip edin."
-                    : "View your location with Google Maps above. Track active fires with NASA FIRMS button."}
+                    ? "Yukarıdaki butona tıklayarak NASA FIRMS haritasını yeni sekmede açın. Haritada kırmızı noktalar aktif yangınları gösterir."
+                    : "Click the button above to open NASA FIRMS map in a new tab. Red dots on the map indicate active fires."}
                 </p>
               </div>
             </div>
@@ -2370,11 +2377,18 @@ export default function App() {
           <span>{T.dashboard[lang]}</span>
         </button>
         <button 
-          className={`mobile-nav-item ${currentPage === "map" ? "active" : ""}`}
-          onClick={() => setCurrentPage("map")}
+          className={`mobile-nav-item ${currentPage === "maps" ? "active" : ""}`}
+          onClick={() => setCurrentPage("maps")}
         >
           <span>🗺️</span>
-          <span>{T.fireMap[lang]}</span>
+          <span>{T.maps[lang]}</span>
+        </button>
+        <button 
+          className={`mobile-nav-item ${currentPage === "fires" ? "active" : ""}`}
+          onClick={() => setCurrentPage("fires")}
+        >
+          <span>🔥</span>
+          <span>{T.fires[lang]}</span>
         </button>
         <button 
           className={`mobile-nav-item ${currentPage === "education" ? "active" : ""}`}
